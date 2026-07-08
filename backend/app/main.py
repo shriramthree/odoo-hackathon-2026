@@ -1,22 +1,30 @@
 from fastapi import FastAPI
 
+from app.middleware.exception_handler import global_exception_handler
+
 app = FastAPI(
-    title="Odoo Hackathon Starter",
-    version="1.0.0",
-    description="Starter Kit for Odoo Hackathon"
+    title="ERP Core",
+    version="1.0.0"
+)
+
+app.add_exception_handler(
+    Exception,
+    global_exception_handler
 )
 
 
 @app.get("/")
-def home():
+async def root():
+
     return {
         "success": True,
-        "message": "Odoo Hackathon Starter API Running"
+        "message": "ERP Core Running"
     }
 
 
 @app.get("/health")
-def health():
+async def health():
+
     return {
-        "status": "Healthy"
+        "status": "healthy"
     }
