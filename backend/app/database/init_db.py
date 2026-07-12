@@ -10,6 +10,7 @@ from app.models.allocation import Allocation
 from app.models.booking import Booking
 from app.models.maintenance import Maintenance
 from app.models.audit import Audit
+from app.models.vendor import Vendor
 
 
 def init_db():
