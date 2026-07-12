@@ -6,6 +6,7 @@ from app.middleware.exception_handler import global_exception_handler
 from app.api.user import router as user_router
 from app.api.auth import router as auth_router
 from app.api.department import router as department_router
+from app.api.employee import router as employee_router
 
 app = FastAPI(
     title="AssetFlow ERP",
@@ -22,12 +23,14 @@ app.add_exception_handler(
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(department_router)
+app.include_router(employee_router)
 
 
 @app.get("/")
 def root():
     return {
-        "message": "AssetFlow API Running"
+        "success": True,
+        "message": "AssetFlow ERP API Running"
     }
 
 

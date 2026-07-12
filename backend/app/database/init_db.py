@@ -3,6 +3,7 @@ from app.database.database import engine
 
 from app.models.user import User
 from app.models.department import Department
+from app.models.employee import Employee
 
 
 def init_db():
