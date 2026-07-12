@@ -7,6 +7,7 @@ from app.models.employee import Employee
 from app.models.asset_category import AssetCategory
 from app.models.asset import Asset
 from app.models.allocation import Allocation
+from app.models.booking import Booking
 
 
 def init_db():
