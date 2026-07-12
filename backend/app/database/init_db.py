@@ -8,6 +8,8 @@ from app.models.asset_category import AssetCategory
 from app.models.asset import Asset
 from app.models.allocation import Allocation
 from app.models.booking import Booking
+from app.models.maintenance import Maintenance
+from app.models.audit import Audit
 
 
 def init_db():

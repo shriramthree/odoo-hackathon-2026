@@ -47,3 +47,9 @@ def health():
     return {
         "status": "healthy"
     }
+
+from app.api.maintenance import router as maintenance_router
+from app.api.audit import router as audit_router
+
+app.include_router(maintenance_router)
+app.include_router(audit_router)
