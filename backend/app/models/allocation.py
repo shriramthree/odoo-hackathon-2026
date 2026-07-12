@@ -1,4 +1,5 @@
 from datetime import date
+
 from sqlalchemy import ForeignKey, Date, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -8,7 +9,10 @@ from app.database.base import Base
 class Allocation(Base):
     __tablename__ = "allocations"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        index=True
+    )
 
     asset_id: Mapped[int] = mapped_column(
         ForeignKey("assets.id")
