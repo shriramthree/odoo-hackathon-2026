@@ -7,6 +7,8 @@ from app.api.user import router as user_router
 from app.api.auth import router as auth_router
 from app.api.department import router as department_router
 from app.api.employee import router as employee_router
+from app.api.asset_category import router as asset_category_router
+from app.api.asset import router as asset_router
 
 app = FastAPI(
     title="AssetFlow ERP",
@@ -24,6 +26,8 @@ app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(department_router)
 app.include_router(employee_router)
+app.include_router(asset_category_router)
+app.include_router(asset_router)
 
 
 @app.get("/")
