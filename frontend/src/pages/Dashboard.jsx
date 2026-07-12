@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
     Package,
     Users,
@@ -7,74 +8,204 @@ import {
     Boxes
 } from "lucide-react";
 
-export default function Dashboard() {
+import {
+    assetAPI,
+    employeeAPI,
+    departmentAPI,
+    maintenanceAPI
+} from "../lib/axios";
 
-    const stats = [
-        {
-            title: "Total Assets",
-            value: 245,
-            icon: Package,
-            color: "bg-blue-500"
-        },
-        {
-            title: "Allocated",
-            value: 182,
-            icon: ClipboardList,
-            color: "bg-green-500"
-        },
-        {
-            title: "Employees",
-            value: 86,
-            icon: Users,
-            color: "bg-purple-500"
-        },
-        {
-            title: "Departments",
-            value: 12,
-            icon: Building2,
-            color: "bg-orange-500"
-        },
-        {
-            title: "Maintenance",
-            value: 18,
-            icon: Wrench,
-            color: "bg-red-500"
-        },
-        {
-            title: "Available",
-            value: 63,
-            icon: Boxes,
-            color: "bg-cyan-500"
+export default function Dashboard(){
+
+    const [stats,setStats]=useState({
+
+        totalAssets:0,
+        allocatedAssets:0,
+        employees:0,
+        departments:0,
+        maintenance:0,
+        availableAssets:0
+
+    });
+
+    useEffect(()=>{
+
+        loadDashboard();
+
+    },[]);
+
+    async function loadDashboard(){
+
+        try{
+
+            const [
+
+                assets,
+
+                employees,
+
+                departments,
+
+                maintenance
+
+            ]=await Promise.all([
+
+                assetAPI.getAll(),
+
+                employeeAPI.getAll(),
+
+                departmentAPI.getAll(),
+
+                maintenanceAPI.getAll()
+
+            ]);
+
+            const assetList=assets.data || [];
+
+            const allocated=assetList.filter(
+
+                a=>a.status==="Allocated"
+
+            ).length;
+
+            const maintenanceCount=assetList.filter(
+
+                a=>a.status==="Maintenance"
+
+            ).length;
+
+            setStats({
+
+                totalAssets:assetList.length,
+
+                allocatedAssets:allocated,
+
+                employees:(employees.data||[]).length,
+
+                departments:(departments.data||[]).length,
+
+                maintenance:(maintenance.data||[]).length,
+
+                availableAssets:
+
+                    assetList.length-
+
+                    allocated-
+
+                    maintenanceCount
+
+            });
+
         }
+
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    }
+
+    const cards=[
+
+        {
+
+            title:"Total Assets",
+
+            value:stats.totalAssets,
+
+            icon:Package,
+
+            color:"bg-blue-600"
+
+        },
+
+        {
+
+            title:"Allocated",
+
+            value:stats.allocatedAssets,
+
+            icon:ClipboardList,
+
+            color:"bg-green-600"
+
+        },
+
+        {
+
+            title:"Employees",
+
+            value:stats.employees,
+
+            icon:Users,
+
+            color:"bg-purple-600"
+
+        },
+
+        {
+
+            title:"Departments",
+
+            value:stats.departments,
+
+            icon:Building2,
+
+            color:"bg-orange-500"
+
+        },
+
+        {
+
+            title:"Maintenance",
+
+            value:stats.maintenance,
+
+            icon:Wrench,
+
+            color:"bg-red-600"
+
+        },
+
+        {
+
+            title:"Available",
+
+            value:stats.availableAssets,
+
+            icon:Boxes,
+
+            color:"bg-cyan-600"
+
+        }
+
     ];
 
-    return (
+    return(
 
         <div className="space-y-8">
 
-            <div>
+            <h1 className="text-3xl font-bold">
 
-                <h1 className="text-3xl font-bold text-slate-800">
-                    Dashboard
-                </h1>
+                Dashboard
 
-                <p className="text-gray-500">
-                    Welcome to AssetFlow ERP
-                </p>
+            </h1>
 
-            </div>
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {cards.map(card=>{
 
-                {stats.map((item) => {
+                    const Icon=card.icon;
 
-                    const Icon = item.icon;
-
-                    return (
+                    return(
 
                         <div
-                            key={item.title}
-                            className="bg-white rounded-xl shadow hover:shadow-xl transition p-6"
+
+                            key={card.title}
+
+                            className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition"
+
                         >
 
                             <div className="flex justify-between">
@@ -82,22 +213,27 @@ export default function Dashboard() {
                                 <div>
 
                                     <p className="text-gray-500">
-                                        {item.title}
+
+                                        {card.title}
+
                                     </p>
 
-                                    <h2 className="text-4xl font-bold mt-2">
-                                        {item.value}
+                                    <h2 className="text-4xl font-bold mt-3">
+
+                                        {card.value}
+
                                     </h2>
 
                                 </div>
 
-                                <div
-                                    className={`w-14 h-14 rounded-xl flex items-center justify-center ${item.color}`}
-                                >
+                                <div className={`${card.color} w-16 h-16 rounded-xl flex items-center justify-center`}>
 
                                     <Icon
-                                        size={28}
+
+                                        size={30}
+
                                         className="text-white"
+
                                     />
 
                                 </div>
@@ -109,106 +245,6 @@ export default function Dashboard() {
                     );
 
                 })}
-
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-6">
-
-                <div className="bg-white rounded-xl shadow p-6">
-
-                    <h2 className="font-bold text-xl mb-4">
-                        Recent Assets
-                    </h2>
-
-                    <table className="w-full">
-
-                        <thead>
-
-                            <tr className="border-b">
-
-                                <th className="text-left py-2">
-                                    Asset
-                                </th>
-
-                                <th className="text-left">
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <tr className="border-b">
-
-                                <td className="py-3">
-                                    Dell Latitude 5440
-                                </td>
-
-                                <td>
-                                    Allocated
-                                </td>
-
-                            </tr>
-
-                            <tr className="border-b">
-
-                                <td className="py-3">
-                                    HP ProBook
-                                </td>
-
-                                <td>
-                                    Available
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td className="py-3">
-                                    Epson Printer
-                                </td>
-
-                                <td>
-                                    Maintenance
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                <div className="bg-white rounded-xl shadow p-6">
-
-                    <h2 className="font-bold text-xl mb-4">
-                        Recent Activities
-                    </h2>
-
-                    <ul className="space-y-4">
-
-                        <li className="border-l-4 border-blue-500 pl-4">
-                            Laptop allocated to John
-                        </li>
-
-                        <li className="border-l-4 border-green-500 pl-4">
-                            Printer returned
-                        </li>
-
-                        <li className="border-l-4 border-orange-500 pl-4">
-                            Maintenance ticket raised
-                        </li>
-
-                        <li className="border-l-4 border-red-500 pl-4">
-                            Asset audit completed
-                        </li>
-
-                    </ul>
-
-                </div>
 
             </div>
 
